@@ -81,7 +81,7 @@ function drawMap() {
       "node",
       name === state.start ? "start" : "",
       name === state.end ? "end" : "",
-      blockedLook.includes(name) ? "inaccessible" : "",
+      blockedLook.has(name) ? "inaccessible" : "",
     ].join(" ");
     const r = n.kind === "hub" ? 11 : 8;
     const label = name.length > 22 ? name.slice(0, 20) + "…" : name;
