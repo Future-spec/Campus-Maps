@@ -1,0 +1,8 @@
+*.exe
+*.o
+*.obj
+.DS_Store
+.vercel
+node_modules/
+campus_test.exe
+test_input.txt
