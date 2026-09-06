@@ -4,44 +4,69 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Campus Accessibility Route Finder</title>
-  <meta name="description" content="A simple DSA project using a graph, DFS, BFS and Dijkstra." />
-  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
   <link rel="stylesheet" href="./css/style.css" />
 </head>
 <body>
-  <main>
-    <header>
-      <p class="tag">SECOND-YEAR DSA MINI PROJECT</p>
+  <div class="app">
+    <header class="banner">
       <h1>Campus Accessibility Route Finder</h1>
-      <p>Seven locations are stored as a weighted, undirected graph. Choose an algorithm to find a route.</p>
+      <p class="sub">TCET 2nd floor modelled as an undirected weighted graph. Routes are filtered for stairs, narrow passages, lifts, and blocked corridors.</p>
     </header>
 
-    <section class="card controls" aria-label="Route controls">
-      <div><label for="start">Start</label><select id="start"></select></div>
-      <div><label for="end">Destination</label><select id="end"></select></div>
-      <label class="check"><input id="wheelchair" type="checkbox" /> Wheelchair mode</label>
-      <div class="buttons">
-        <button id="bfs" type="button">BFS: Fewest Stops</button>
-        <button id="dijkstra" type="button">Dijkstra: Shortest Distance</button>
-        <button id="dfs" class="secondary" type="button">DFS Traversal</button>
+    <aside class="card">
+      <h2>Find a route</h2>
+      <label for="profile">Accessibility profile</label>
+      <select id="profile">
+        <option value="wheelchair">Wheelchair</option>
+        <option value="visual">Visually impaired</option>
+        <option value="none">No constraints</option>
+      </select>
+      <p class="note" id="profileNote"></p>
+
+      <div class="row">
+        <div>
+          <label for="start">From</label>
+          <select id="start"></select>
+        </div>
+        <div>
+          <label for="end">To</label>
+          <select id="end"></select>
+        </div>
       </div>
-      <p id="modeNote" class="note"></p>
+
+      <div class="actions">
+        <button id="btnBfs" type="button">BFS</button>
+        <button id="btnDijkstra" type="button">Dijkstra</button>
+        <button id="btnDfs" class="ghost" type="button">DFS all paths</button>
+        <button id="btnCompare" class="ghost" type="button">Compare</button>
+        <button id="btnUnreachable" class="ghost" type="button">Unreachable</button>
+        <button id="btnReset" class="danger" type="button">Reset map</button>
+      </div>
+
+      <p class="note" id="status">Click a room on the map to set start, then another for destination. Click a path to block or unblock it.</p>
+    </aside>
+
+    <section class="card map-wrap">
+      <svg id="floor" class="floor" viewBox="0 0 1200 700"></svg>
+      <div class="legend">
+        <span class="l-route">Highlighted route</span>
+        <span class="l-stairs">Stairs</span>
+        <span class="l-lift">Lift</span>
+        <span class="l-narrow">Narrow</span>
+      </div>
     </section>
 
-    <section class="card"><h2>Campus graph</h2>
-      <svg id="map" viewBox="0 0 940 380" role="img" aria-label="Campus graph with locations and corridors"></svg>
-      <p class="legend"><span class="normal-line"></span> Corridor <span class="stair-line"></span> Stairs <span class="route-line"></span> Selected route</p>
-    </section>
+    <aside class="card">
+      <h2>Traversal result</h2>
+      <div id="output" class="result">
+        <p>Run BFS, Dijkstra, or Compare to see the route.</p>
+      </div>
+    </aside>
 
-    <section class="card result-card"><h2>Result</h2><div id="result">Choose BFS, Dijkstra, or DFS to see the result.</div></section>
-
-    <section class="card viva"><h2>How to explain it</h2>
-      <p><strong>Graph:</strong> locations are vertices; corridors are weighted edges. A corridor is stored in both directions.</p>
-      <p><strong>Adjacency list:</strong> every location stores only its neighbours, which is good for a sparse campus map.</p>
-      <p><strong>BFS:</strong> uses a queue and finds the fewest stops. <strong>Dijkstra:</strong> finds the lowest distance. <strong>DFS:</strong> goes deep, then backtracks.</p>
-      <p><strong>Accessibility:</strong> wheelchair mode filters out stair edges before an algorithm visits them.</p>
-    </section>
-  </main>
+    <footer>
+      Console version: <code>g++ -std=c++17 main.cpp graph.cpp -o campus_route_finder</code>
+    </footer>
+  </div>
   <script type="module" src="./js/app.js"></script>
 </body>
 </html>
