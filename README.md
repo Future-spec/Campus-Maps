@@ -1,93 +1,62 @@
 # Campus Accessibility Route Finder
 
-DSA project: find **accessible routes** on a campus graph. The map is the **TCET 2nd floor** (A-Wing, B-Wing, C-Wing) from the college AutoCAD layout.
+A small second-year DSA project. It finds routes in a campus graph while showing the difference between DFS, BFS and Dijkstra's algorithm.
 
-- **C++ console app** — what you compile and demo in the lab
-- **Web app** (`web/`) — same algorithms in the browser, ready for **Vercel**
+The project intentionally uses a tiny map: **7 locations and 9 corridors**. That makes every vertex, edge and output easy to explain in a viva.
 
-## Problem
+## DSA concepts used
 
-Some corridors have stairs, narrow passages, or lifts. Given a user profile (wheelchair, visually impaired, or none), the system must:
-
-1. Return an accessible route
-2. List locations that cannot be reached
-3. Compare alternative traversals (BFS vs DFS vs Dijkstra)
-
-## DSA used
-
-| Topic | How it is used |
+| Concept | Where it is used |
 | --- | --- |
-| Graph + adjacency list | Rooms = vertices, corridors = undirected weighted edges |
-| BFS | Fewest **stops** (queue, O(V+E)) |
-| DFS + backtracking | All accessible paths (capped at 30 / 20) |
-| Dijkstra | Shortest **distance** (min-heap, O((V+E) log V)) |
+| Graph | Campus locations are vertices and corridors are edges. |
+| Adjacency list | `vector<vector<Edge>>` stores only the neighbours of each location. |
+| DFS | Visits reachable places by going deep before backtracking. |
+| BFS | Finds a route with the fewest stops using a queue. |
+| Dijkstra | Finds the lowest total distance using a min-priority queue. |
 
-Edges are **filtered at traversal time**. Blocked / stairs / narrow / lift flags stay on the edge; the graph is not rebuilt.
+The graph is undirected, so every corridor is stored twice: `A -> B` and `B -> A`.
 
-## TCET 2nd-floor model
+## Accessibility rule
 
-```
-                    ┌────────────── A-WING ──────────────┐
-                    │ IT staff · computer labs · lifts   │
-                    └───────────────┬────────────────────┘
-                                    │ Central Junction
-                    ┌──────── B-WING ┼──── C-WING ────────┐
-                    │ Guest / halls  │  210–214, seminar  │
-                    │ Auditorium     │  Computer Centre   │
-                    └────────────────┴────────────────────┘
-```
+There is one clear rule: when **wheelchair mode** is on, edges marked as stairs are skipped. The rest of the graph remains the same. This is a simple example of filtering graph edges before traversal.
 
-- **A-Wing:** IT Department, staff room, System / Database / OS / Cloud / Project / Software labs, ladies & handicap restroom, fire lift, stairs
-- **B-Wing:** Guest room, multipurpose hall, auditorium, rest room, fire lift, stairs
-- **C-Wing:** 210 EXTC Lab-8 through 214, Seminar Hall III, Computer Centre, gents room, fire lift, stairs
-- **Central:** junction, main lift, lobby stairs
+## Best viva demo
 
-## What to say in the viva
+Use **Entrance (0)** as the start and **Seminar Hall (6)** as the destination.
 
-1. **Why adjacency list?** Campus graphs are sparse. List uses O(V+E) space; a matrix would be O(V²).
-2. **BFS vs Dijkstra (run this):** `210 EXTC Lab-8` → `213 Computer Centre` with no constraints. BFS takes the C-Wing corridor (2 stops, 58 m). Dijkstra walks 210 → 211 → 212 → 213 (3 stops, 45 m).
-3. **Wheelchair:** stairs are skipped; lifts are allowed. `Central Junction` → `Auditorium Hall` uses **B-Wing Fire Lift**. Click that lift corridor to **block** it — the hall is then unreachable (only stairs remain).
-4. **Unreachable** is BFS reachability from the start node.
+With wheelchair mode off:
 
-## C++ (lab / presentation)
+- BFS gives `Entrance -> Main Corridor -> Seminar Hall`: 2 stops, 60 m. BFS chooses fewer edges.
+- Dijkstra gives `Entrance -> Main Corridor -> Stairs -> Seminar Hall`: 3 stops, 25 m. Dijkstra chooses fewer metres.
+
+Turn wheelchair mode on, then run Dijkstra again:
+
+- Stair edges are skipped, so it uses `Entrance -> Main Corridor -> Lift -> Seminar Hall`: 3 stops, 35 m.
+
+## Run the C++ program
 
 ```bash
 g++ -std=c++17 main.cpp graph.cpp -o campus_route_finder
 ./campus_route_finder
 ```
 
-| File | Role |
+Windows PowerShell:
+
+```powershell
+g++ -std=c++17 main.cpp graph.cpp -o campus_route_finder.exe
+.\campus_route_finder.exe
+```
+
+## Web demo
+
+Open `web/index.html` in a browser, or deploy the `web` folder as a static site. The browser version mirrors the same 7-node graph and algorithms as the C++ program.
+
+## Files
+
+| File | Purpose |
 | --- | --- |
-| `graph.h` | `Path`, constraints, `CampusGraph` |
-| `graph.cpp` | BFS, DFS, Dijkstra, block/mark edges |
-| `main.cpp` | Menu + TCET map |
-
-## Web (Vercel)
-
-Static site in `web/`: `index.html`, `css/style.css`, `js/graph.js`, `js/campus.js`, `js/app.js`.
-
-### Deploy
-
-1. Push this repo to GitHub
-2. [vercel.com/new](https://vercel.com/new) → import the repo
-3. Framework: **Other**. Output directory: `web`. Install/build: leave empty
-4. Deploy
-
-Or CLI:
-
-```bash
-npm i -g vercel
-vercel
-```
-
-When prompted, set output directory to `web`.
-
-## File structure
-
-```
-CampusAccessibilityRouteFinder/
-  graph.h / graph.cpp / main.cpp   C++ DSA core
-  web/                             Vercel static app
-  vercel.json
-  README.md
-```
+| `main.cpp` | Small menu-driven demo and campus data. |
+| `graph.h` | `Edge` structure and `CampusGraph` class declaration. |
+| `graph.cpp` | Adjacency list, DFS, BFS and Dijkstra implementation. |
+| `web/` | Simple visual version of the same program. |
+| `VIVA_NOTES.md` | Short explanation split across four team members. |
