@@ -18,22 +18,30 @@ We modelled the TCET 2nd floor (A-Wing, B-Wing, C-Wing) as a graph where rooms a
 - DFS (Depth First Search) with backtracking
 - Dijkstra's Algorithm (min-heap / priority queue)
 
-## How to Run
+## How to Run the Console Version
 
-### C++ (Console)
-```
+```powershell
 g++ -std=c++17 main.cpp graph.cpp -o campus_route_finder
 ./campus_route_finder
 ```
 
-### Web Version
-Open `web/index.html` in any browser.
+The console program runs without a database or external library.
+
+## How to Run the Browser Version
+
+Open `web/index.html` in a modern browser, or serve the project folder with a local static server. The browser version demonstrates the same graph ideas with route selection, accessibility profiles, and visual feedback.
 
 ## Files
 - `graph.h` - Graph class definition
 - `graph.cpp` - BFS, DFS, Dijkstra implementation
 - `main.cpp` - Menu driven program with TCET campus data
 - `web/` - Browser version with interactive map
+- `web/js/graph.js` - Browser graph algorithms
+- `web/js/campus.js` - Browser campus nodes, edges, and profiles
+
+## Viva Preparation
+
+See [VIVA_GUIDE.md](VIVA_GUIDE.md) for a four-member division, a five-minute demonstration, and common viva questions.
 
 ## Team
 Group project for DSA course, 2nd Year IT, TCET.
