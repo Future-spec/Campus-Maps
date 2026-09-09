@@ -1,152 +1,142 @@
-// graph.js - Graph class for the campus route finder.
-// Mirrors the C++ version: adjacency list, BFS, DFS, Dijkstra,
-// and a single accessibility rule (wheelchair mode avoids stairs).
+// Accessibility-aware weighted graph used by the browser route finder.
 
 export class CampusGraph {
   constructor() {
-    this.adjList = new Map();    // location -> [ {to, distance, hasStairs} ]
-    this.locations = new Set();  // set of all location names
+    this.adjList = new Map();
+  }
+
+  get locations() {
+    return new Set(this.adjList.keys());
   }
 
   addLocation(name) {
-    if (this.locations.has(name)) return;
-    this.locations.add(name);
-    this.adjList.set(name, []);
+    if (!this.adjList.has(name)) this.adjList.set(name, []);
   }
 
-  // Undirected: the edge is stored in both directions.
-  addPath(from, to, distance, hasStairs = false) {
+  addPath(from, to, distance, flags = {}) {
     this.addLocation(from);
     this.addLocation(to);
-    this.adjList.get(from).push({ to, distance, hasStairs });
-    this.adjList.get(to).push({ to: from, distance, hasStairs });
+    this.adjList.get(from).push({ to, distance, ...flags, isBlocked: false });
+    this.adjList.get(to).push({ to: from, distance, ...flags, isBlocked: false });
   }
 
-  // Wheelchair mode skips any corridor with stairs.
-  canUse(edge, avoidStairs) {
-    return !(avoidStairs && edge.hasStairs);
+  getEdge(from, to) {
+    return (this.adjList.get(from) || []).find((edge) => edge.to === to);
   }
 
-  getDistance(from, to) {
-    for (const edge of this.adjList.get(from) || []) {
-      if (edge.to === to) return edge.distance;
-    }
-    return -1;
+  setBlocked(from, to, blocked) {
+    const forward = this.getEdge(from, to);
+    const reverse = this.getEdge(to, from);
+    if (forward) forward.isBlocked = blocked;
+    if (reverse) reverse.isBlocked = blocked;
   }
 
-  // Rebuild the route from a parent map and add up the distances.
+  canUse(edge, options) {
+    return !edge.isBlocked &&
+      !(options.avoidStairs && edge.hasStairs) &&
+      !(options.avoidNarrow && edge.isNarrow) &&
+      !(options.avoidLiftRequired && edge.liftRequired);
+  }
+
   reconstruct(parent, start, end) {
-    const route = [];
-    let node = end;
-    while (node) {
-      route.push(node);
-      node = parent.get(node);
+    const path = [];
+    let current = end;
+    while (current !== undefined) {
+      path.push(current);
+      current = parent.get(current);
     }
-    route.reverse();
-    if (route[0] !== start) return null;
-
-    let dist = 0;
-    for (let i = 0; i + 1 < route.length; i++) {
-      dist += this.getDistance(route[i], route[i + 1]);
+    path.reverse();
+    if (path[0] !== start) return null;
+    let distance = 0;
+    for (let index = 0; index < path.length - 1; index += 1) {
+      distance += this.getEdge(path[index], path[index + 1]).distance;
     }
-    return { path: route, distance: dist, stops: route.length - 1 };
+    return { path, distance, stops: path.length - 1 };
   }
 
-  // BFS - fewest stops. Uses a queue, explores level by level.
-  bfsRoute(start, end, avoidStairs) {
-    if (!this.locations.has(start) || !this.locations.has(end)) return null;
-    if (start === end) return { path: [start], distance: 0, stops: 0 };
-
+  bfsRoute(start, end, options) {
+    if (!this.adjList.has(start) || !this.adjList.has(end)) return null;
     const queue = [start];
     const visited = new Set([start]);
-    const parent = new Map([[start, ""]]);
-
+    const parent = new Map();
     while (queue.length) {
       const current = queue.shift();
-      for (const edge of this.adjList.get(current) || []) {
-        if (visited.has(edge.to) || !this.canUse(edge, avoidStairs)) continue;
+      if (current === end) return this.reconstruct(parent, start, end);
+      for (const edge of this.adjList.get(current)) {
+        if (visited.has(edge.to) || !this.canUse(edge, options)) continue;
         visited.add(edge.to);
         parent.set(edge.to, current);
-        if (edge.to === end) return this.reconstruct(parent, start, end);
         queue.push(edge.to);
       }
     }
     return null;
   }
 
-  // DFS - all paths using backtracking, sorted by distance.
-  dfsExplore(start, end, avoidStairs, maxPaths = 20) {
-    if (!this.locations.has(start) || !this.locations.has(end)) return [];
-    const all = [];
-    const visited = new Set([start]);
-    const path = [start];
-
-    const walk = (current, dist) => {
-      if (all.length >= maxPaths) return;
-      if (current === end) {
-        all.push({ path: [...path], distance: dist, stops: path.length - 1 });
-        return;
-      }
-      for (const edge of this.adjList.get(current) || []) {
-        if (visited.has(edge.to) || !this.canUse(edge, avoidStairs)) continue;
-        visited.add(edge.to);
-        path.push(edge.to);
-        walk(edge.to, dist + edge.distance);
-        path.pop();          // backtrack
-        visited.delete(edge.to);
-      }
-    };
-
-    walk(start, 0);
-    all.sort((a, b) => a.distance - b.distance);
-    return all;
-  }
-
-  // Dijkstra - shortest distance using a min-priority queue.
-  dijkstraRoute(start, end, avoidStairs) {
-    if (!this.locations.has(start) || !this.locations.has(end)) return null;
-    if (start === end) return { path: [start], distance: 0, stops: 0 };
-
-    const dist = new Map();
-    const parent = new Map([[start, ""]]);
-    for (const loc of this.locations) dist.set(loc, Infinity);
-    dist.set(start, 0);
-
-    // simple min-heap using an array
-    const pq = [{ d: 0, u: start }];
-    const popMin = () => {
-      let best = 0;
-      for (let i = 1; i < pq.length; i++) {
-        if (pq[i].d < pq[best].d) best = i;
-      }
-      return pq.splice(best, 1)[0];
-    };
-
-    while (pq.length) {
-      const { d, u } = popMin();
-      if (d > dist.get(u)) continue;
-      if (u === end) break;
-      for (const edge of this.adjList.get(u) || []) {
-        if (!this.canUse(edge, avoidStairs)) continue;
-        const nd = dist.get(u) + edge.distance;
-        if (nd < dist.get(edge.to)) {
-          dist.set(edge.to, nd);
-          parent.set(edge.to, u);
-          pq.push({ d: nd, u: edge.to });
+  dijkstraRoute(start, end, options) {
+    const distances = new Map([...this.adjList.keys()].map((name) => [name, Infinity]));
+    const parent = new Map();
+    distances.set(start, 0);
+    const queue = [{ name: start, distance: 0 }];
+    while (queue.length) {
+      queue.sort((a, b) => a.distance - b.distance);
+      const current = queue.shift();
+      if (current.name === end) return this.reconstruct(parent, start, end);
+      if (current.distance > distances.get(current.name)) continue;
+      for (const edge of this.adjList.get(current.name) || []) {
+        if (!this.canUse(edge, options)) continue;
+        const next = current.distance + edge.distance;
+        if (next < distances.get(edge.to)) {
+          distances.set(edge.to, next);
+          parent.set(edge.to, current.name);
+          queue.push({ name: edge.to, distance: next });
         }
       }
     }
-
-    if (dist.get(end) === Infinity) return null;
-    return this.reconstruct(parent, start, end);
+    return null;
   }
 
-  // BFS + DFS + Dijkstra on the same pair, for the Compare button.
-  compareRoutes(start, end, avoidStairs) {
-    return {
-      bfs: this.bfsRoute(start, end, avoidStairs),
-      dijkstra: this.dijkstraRoute(start, end, avoidStairs),
-      dfs: this.dfsExplore(start, end, avoidStairs),
+  dfsExplore(start, end, options, maxPaths = 20) {
+    const routes = [];
+    const visited = new Set([start]);
+    const path = [start];
+    const walk = (current, distance) => {
+      if (routes.length >= maxPaths) return;
+      if (current === end) {
+        routes.push({ path: [...path], distance, stops: path.length - 1 });
+        return;
+      }
+      for (const edge of this.adjList.get(current) || []) {
+        if (visited.has(edge.to) || !this.canUse(edge, options)) continue;
+        visited.add(edge.to);
+        path.push(edge.to);
+        walk(edge.to, distance + edge.distance);
+        path.pop();
+        visited.delete(edge.to);
+      }
     };
+    walk(start, 0);
+    return routes.sort((a, b) => a.distance - b.distance);
+  }
+
+  compareRoutes(start, end, options) {
+    return {
+      bfs: this.bfsRoute(start, end, options),
+      dijkstra: this.dijkstraRoute(start, end, options),
+      dfs: this.dfsExplore(start, end, options),
+    };
+  }
+
+  showInaccessible(start, options) {
+    const reachable = new Set();
+    const queue = [start];
+    while (queue.length) {
+      const current = queue.shift();
+      if (reachable.has(current)) continue;
+      reachable.add(current);
+      for (const edge of this.adjList.get(current) || []) {
+        if (this.canUse(edge, options)) queue.push(edge.to);
+      }
+    }
+    return [...this.adjList.keys()].filter((name) => !reachable.has(name));
   }
 }
