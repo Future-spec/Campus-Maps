@@ -29,7 +29,7 @@ The console program runs without a database or external library.
 
 ## How to Run the Browser Version
 
-Open `web/index.html` in a modern browser, or serve the project folder with a local static server. The browser version demonstrates the same graph ideas with route selection, accessibility profiles, and visual feedback.
+Serve the browser folder with `python -m http.server 5500 --directory web` and open `http://localhost:5500`. The browser version demonstrates the same graph ideas with route selection, accessibility profiles, and visual feedback.
 
 ## Files
 - `graph.h` - Graph class definition

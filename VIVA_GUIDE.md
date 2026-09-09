@@ -28,7 +28,7 @@ This project represents a campus as a graph and finds routes that respect access
 
 ## Five-minute demonstration
 
-1. Start with the console version or open the browser map.
+1. Start with the console version, or serve the browser map with `python -m http.server 5500 --directory web` and open `http://localhost:5500`.
 2. Select a wheelchair profile.
 3. Find a route from Main Entrance to 213 Computer Centre.
 4. Compare BFS and Dijkstra.
