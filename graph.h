@@ -1,69 +1,88 @@
-// graph.h - Campus Accessibility Route Finder
-// A small graph for a DSA project.
+// graph.h — Campus Accessibility Route Finder
 //
-// The campus is stored as an adjacency list:
-//   for each location we keep a list of edges to its neighbours.
+// DATA STRUCTURES USED:
+//   - Adjacency List: map<string, vector<Edge>>
+//     Each location stores a list of edges (corridors) to its neighbours.
+//   - set<string> for unique location names (sorted order).
 //
-// Three search algorithms are implemented:
-//   1. BFS      - route with the fewest stops
-//   2. DFS      - every possible route (backtracking)
-//   3. Dijkstra - route with the shortest total distance
+// WHY ADJACENCY LIST?
+//   A campus has few corridors compared to all possible pairs.
+//   Adjacency list uses O(V + E) space instead of O(V²) for a matrix.
 
 #ifndef GRAPH_H
 #define GRAPH_H
 
 #include <string>
 #include <vector>
-#include <set>
 #include <map>
+#include <set>
 #include <utility>
 
 using namespace std;
 
-// One edge (corridor) between two locations.
+// ── One corridor between two locations ──────────────────────
 struct Edge {
-    string to;         // destination location
-    int    distance;   // metres
-    bool   hasStairs;  // true if this corridor uses stairs
+    string to;          // destination location
+    int    distance;    // in metres
+    bool   hasStairs;   // true = wheelchair cannot use this path
+    bool   isNarrow;    // true = wheelchair cannot use this path
+    bool   isBlocked;   // true = path is temporarily blocked
 };
 
-// The campus graph. Undirected, so every edge is stored twice.
+// ── The campus graph ────────────────────────────────────────
 class CampusGraph {
 private:
-    // adjacency list: location -> all edges leaving it
+    // ADJACENCY LIST: location name → list of edges leaving it
     map<string, vector<Edge>> adjList;
-    // all location names (kept sorted for a neat display)
+
+    // All location names (sorted set for neat display)
     set<string> locations;
 
-    // Can this edge be used by the current profile?
-    // Wheelchair mode (avoidStairs) skips any edge that has stairs.
-    bool canUse(const Edge& edge, bool avoidStairs) const;
+    // Check if an edge can be used with current accessibility constraints
+    bool canUse(const Edge& edge, bool avoidStairs, bool avoidNarrow) const;
 
-    // distance between two directly connected locations
+    // Get distance between two directly connected locations
     int getDistance(const string& from, const string& to) const;
 
-    // recursive helper for DFS
-    void dfsHelper(const string& current,
-                   const string& destination,
-                   bool avoidStairs,
-                   set<string>& visited,
-                   vector<string>& path,
-                   int dist,
+    // Recursive helper for DFS (backtracking)
+    void dfsHelper(const string& current, const string& dest,
+                   bool avoidStairs, bool avoidNarrow,
+                   set<string>& visited, vector<string>& path, int dist,
                    vector<pair<vector<string>, int>>& allPaths);
 
 public:
+    // ── Build the graph ─────────────────────────────────────
     void addLocation(const string& name);
-    void addPath(const string& from, const string& to, int distance, bool hasStairs = false);
+    void addPath(const string& from, const string& to, int distance,
+                 bool hasStairs = false, bool isNarrow = false);
+    void blockPath(const string& from, const string& to);
+    void unblockPath(const string& from, const string& to);
     void displayGraph() const;
 
-    // BFS - fewest stops. Returns the route and total distance.
-    pair<vector<string>, int> bfsRoute(const string& start, const string& end, bool avoidStairs);
+    // ── Route finding algorithms ────────────────────────────
 
-    // DFS - all paths via backtracking, sorted by distance.
-    vector<pair<vector<string>, int>> dfsExplore(const string& start, const string& end, bool avoidStairs);
+    // BFS: finds route with FEWEST STOPS (edges)
+    // Time: O(V + E)
+    pair<vector<string>, int> bfsRoute(const string& start, const string& end,
+                                       bool avoidStairs, bool avoidNarrow);
 
-    // Dijkstra - shortest distance.
-    pair<vector<string>, int> dijkstraRoute(const string& start, const string& end, bool avoidStairs);
+    // DFS: finds ALL possible paths using backtracking
+    // Time: O(V! in worst case) — explores every permutation
+    vector<pair<vector<string>, int>> dfsAllPaths(
+        const string& start, const string& end,
+        bool avoidStairs, bool avoidNarrow);
+
+    // Dijkstra: finds route with SHORTEST DISTANCE (metres)
+    // Time: O((V + E) log V) with priority queue
+    pair<vector<string>, int> dijkstraRoute(const string& start, const string& end,
+                                            bool avoidStairs, bool avoidNarrow);
+
+    // Find locations unreachable from a given start point
+    vector<string> findUnreachable(const string& start,
+                                   bool avoidStairs, bool avoidNarrow);
+
+    // Getter for location names
+    const set<string>& getLocations() const { return locations; }
 };
 
 #endif
