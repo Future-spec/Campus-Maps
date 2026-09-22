@@ -1,8 +1,18 @@
+# Compiled
 *.exe
 *.o
 *.obj
+
+# OS
 .DS_Store
-.vercel
+
+# IDE
+.vscode/
+
+# Vercel
+.vercel/
 node_modules/
-campus_test.exe
+
+# Test files
 test_input.txt
+campus_test.exe

@@ -1,4 +1,4 @@
-// main.cpp — Campus Accessibility Route Finder
+// main.cpp Ã¢â‚¬â€ Campus Accessibility Route Finder
 //
 // Simple 3-floor campus layout for DSA project demonstration.
 // Run from VS Code terminal: g++ -std=c++17 main.cpp graph.cpp -o campus.exe
@@ -22,37 +22,37 @@
 
 using namespace std;
 
-// ── Build the 3-floor campus ────────────────────────────────
+// Ã¢â€â‚¬Ã¢â€â‚¬ Build the 3-floor campus Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 void buildCampus(CampusGraph& graph) {
     cout << "\n  Building 3-floor campus...\n\n";
 
-    // ── Floor 1 (Ground Floor) ──
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Floor 1 (Ground Floor) Ã¢â€â‚¬Ã¢â€â‚¬
     graph.addPath("Main Gate",  "Library",  30);     // accessible corridor
     graph.addPath("Library",    "Canteen",  25);     // accessible corridor
     graph.addPath("Main Gate",  "Canteen",  50);     // accessible corridor
 
-    // ── Floor 2 (First Floor) ──
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Floor 2 (First Floor) Ã¢â€â‚¬Ã¢â€â‚¬
     graph.addPath("Computer Lab",   "Classroom 201", 20);  // accessible
     graph.addPath("Classroom 201",  "Staff Room",    15);  // accessible
     graph.addPath("Computer Lab",   "Staff Room",    40);  // accessible
 
-    // ── Floor 3 (Second Floor) ──
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Floor 3 (Second Floor) Ã¢â€â‚¬Ã¢â€â‚¬
     graph.addPath("Seminar Hall",  "Physics Lab",       25);  // accessible
     graph.addPath("Physics Lab",   "Principal Office",  20);  // accessible
 
-    // ── Between Floor 1 and Floor 2 ──
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Between Floor 1 and Floor 2 Ã¢â€â‚¬Ã¢â€â‚¬
     graph.addPath("Main Gate",     "Computer Lab",   35, true, false);  // STAIRS
     graph.addPath("Library",       "Classroom 201",  30, false, true);  // NARROW
     graph.addPath("Canteen",       "Staff Room",     10, false, false); // LIFT (accessible)
 
-    // ── Between Floor 2 and Floor 3 ──
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Between Floor 2 and Floor 3 Ã¢â€â‚¬Ã¢â€â‚¬
     graph.addPath("Computer Lab",  "Seminar Hall",      35, true, false);  // STAIRS
     graph.addPath("Staff Room",    "Principal Office",   10, false, false); // LIFT (accessible)
 
     cout << "  Campus ready: 9 locations, 13 paths across 3 floors.\n";
 }
 
-// ── Print a route result ────────────────────────────────────
+// Ã¢â€â‚¬Ã¢â€â‚¬ Print a route result Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 void printRoute(const string& algo, const pair<vector<string>, int>& result) {
     cout << "\n  [" << algo << "]\n";
     if (result.second == -1 || result.first.empty()) {
@@ -68,14 +68,12 @@ void printRoute(const string& algo, const pair<vector<string>, int>& result) {
          << "  |  Stops: " << result.first.size() - 1 << "\n";
 }
 
-// ── Choose a location from the list ─────────────────────────
-string chooseLocation(const CampusGraph& graph, const string& prompt) {
+// Ã¢â€â‚¬Ã¢â€â‚¬ Choose a location from the list Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+string chooseLocation(const CampusGraph& graph, const string& prompt, bool showMenu = true) {
     const auto& locs = graph.getLocations();
     vector<string> names(locs.begin(), locs.end());
 
-    cout << "\n  Locations:\n";
-    for (size_t i = 0; i < names.size(); i++)
-        cout << "    " << i + 1 << ". " << names[i] << "\n";
+    if (showMenu) { cout << "\n  Locations:\n"; for (size_t i = 0; i < names.size(); i++) cout << "    " << i + 1 << ". " << names[i] << "\n"; }
 
     int choice = 0;
     while (choice < 1 || choice > (int)names.size()) {
@@ -87,7 +85,7 @@ string chooseLocation(const CampusGraph& graph, const string& prompt) {
     return names[choice - 1];
 }
 
-// ── Main menu ───────────────────────────────────────────────
+// Ã¢â€â‚¬Ã¢â€â‚¬ Main menu Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 int main() {
     CampusGraph graph;
     buildCampus(graph);
@@ -96,14 +94,14 @@ int main() {
 
     int choice = -1;
     while (choice != 0) {
-        cout << "\n  ════════════════════════════════════════\n";
+        cout << "\n  Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â\n";
         cout << "  CAMPUS ACCESSIBILITY ROUTE FINDER\n";
         cout << "  Wheelchair mode: " << (wheelchairMode ? "ON (avoids stairs + narrow)" : "OFF") << "\n";
-        cout << "  ════════════════════════════════════════\n";
+        cout << "  Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â\n";
         cout << "  1. Display Campus Map (Adjacency List)\n";
-        cout << "  2. Find Route — BFS (Fewest Stops)\n";
-        cout << "  3. Find Route — Dijkstra (Shortest Distance)\n";
-        cout << "  4. Explore All Paths — DFS (Backtracking)\n";
+        cout << "  2. Find Route Ã¢â‚¬â€ BFS (Fewest Stops)\n";
+        cout << "  3. Find Route Ã¢â‚¬â€ Dijkstra (Shortest Distance)\n";
+        cout << "  4. Explore All Paths Ã¢â‚¬â€ DFS (Backtracking)\n";
         cout << "  5. Compare Routes (BFS vs Dijkstra)\n";
         cout << "  6. Show Unreachable Locations\n";
         cout << "  7. Block a Path\n";
@@ -120,36 +118,36 @@ int main() {
 
         switch (choice) {
 
-        // ── 1. Display adjacency list ───────────────────────
+        // Ã¢â€â‚¬Ã¢â€â‚¬ 1. Display adjacency list Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
         case 1:
             graph.displayGraph();
             break;
 
-        // ── 2. BFS — fewest stops ───────────────────────────
+        // Ã¢â€â‚¬Ã¢â€â‚¬ 2. BFS Ã¢â‚¬â€ fewest stops Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
         case 2: {
-            string start = chooseLocation(graph, "Start: ");
-            string end   = chooseLocation(graph, "Destination: ");
+            string start = chooseLocation(graph, "Start: ", true);
+            string end   = chooseLocation(graph, "Destination: ", false);
             auto result  = graph.bfsRoute(start, end, avoidStairs, avoidNarrow);
-            printRoute("BFS — Fewest Stops", result);
+            printRoute("BFS Ã¢â‚¬â€ Fewest Stops", result);
             break;
         }
 
-        // ── 3. Dijkstra — shortest distance ─────────────────
+        // Ã¢â€â‚¬Ã¢â€â‚¬ 3. Dijkstra Ã¢â‚¬â€ shortest distance Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
         case 3: {
-            string start = chooseLocation(graph, "Start: ");
-            string end   = chooseLocation(graph, "Destination: ");
+            string start = chooseLocation(graph, "Start: ", true);
+            string end   = chooseLocation(graph, "Destination: ", false);
             auto result  = graph.dijkstraRoute(start, end, avoidStairs, avoidNarrow);
-            printRoute("Dijkstra — Shortest Distance", result);
+            printRoute("Dijkstra Ã¢â‚¬â€ Shortest Distance", result);
             break;
         }
 
-        // ── 4. DFS — all paths with backtracking ────────────
+        // Ã¢â€â‚¬Ã¢â€â‚¬ 4. DFS Ã¢â‚¬â€ all paths with backtracking Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
         case 4: {
-            string start = chooseLocation(graph, "Start: ");
-            string end   = chooseLocation(graph, "Destination: ");
+            string start = chooseLocation(graph, "Start: ", true);
+            string end   = chooseLocation(graph, "Destination: ", false);
             auto paths   = graph.dfsAllPaths(start, end, avoidStairs, avoidNarrow);
 
-            cout << "\n  [DFS — All Paths]\n";
+            cout << "\n  [DFS Ã¢â‚¬â€ All Paths]\n";
             if (paths.empty()) {
                 cout << "  No accessible paths found.\n";
             } else {
@@ -166,21 +164,20 @@ int main() {
             break;
         }
 
-        // ── 5. Compare BFS vs Dijkstra ──────────────────────
+        // Ã¢â€â‚¬Ã¢â€â‚¬ 5. Compare BFS vs Dijkstra Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
         case 5: {
-            string start = chooseLocation(graph, "Start: ");
-            string end   = chooseLocation(graph, "Destination: ");
+            string start = chooseLocation(graph, "Start: ", true);
+            string end   = chooseLocation(graph, "Destination: ", false);
 
             auto bfs = graph.bfsRoute(start, end, avoidStairs, avoidNarrow);
             auto dij = graph.dijkstraRoute(start, end, avoidStairs, avoidNarrow);
 
-            cout << "\n  ── ROUTE COMPARISON ──\n";
-            printRoute("BFS — Fewest Stops", bfs);
-            printRoute("Dijkstra — Shortest Distance", dij);
+            cout << "\n  Ã¢â€â‚¬Ã¢â€â‚¬ ROUTE COMPARISON Ã¢â€â‚¬Ã¢â€â‚¬\n";
+            printRoute("BFS Ã¢â‚¬â€ Fewest Stops", bfs);
+            printRoute("Dijkstra Ã¢â‚¬â€ Shortest Distance", dij);
 
             if (bfs.second != -1 && dij.second != -1) {
-                if (bfs.second == dij.second)
-                    cout << "\n  Result: Both algorithms found the same route.\n";
+                if (bfs.first == dij.first) cout << "\n  Result: Both algorithms found the exact same route.\n"; else if (bfs.second == dij.second) cout << "\n  Result: Different routes, but equal distance (" << bfs.second << "m).\n";
                 else
                     cout << "\n  Result: BFS uses " << bfs.first.size() - 1
                          << " stops (" << bfs.second << "m), Dijkstra uses "
@@ -190,9 +187,9 @@ int main() {
             break;
         }
 
-        // ── 6. Find unreachable locations ───────────────────
+        // Ã¢â€â‚¬Ã¢â€â‚¬ 6. Find unreachable locations Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
         case 6: {
-            string start = chooseLocation(graph, "Check from: ");
+            string start = chooseLocation(graph, "Check from: ", true);
             auto unreachable = graph.findUnreachable(start, avoidStairs, avoidNarrow);
 
             cout << "\n  [Unreachable from " << start << "]\n";
@@ -206,25 +203,23 @@ int main() {
             break;
         }
 
-        // ── 7. Block a path ─────────────────────────────────
+        // Ã¢â€â‚¬Ã¢â€â‚¬ 7. Block a path Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
         case 7: {
-            string from = chooseLocation(graph, "Block from: ");
-            string to   = chooseLocation(graph, "Block to: ");
-            graph.blockPath(from, to);
-            cout << "\n  Path BLOCKED: " << from << " <-> " << to << "\n";
+            string from = chooseLocation(graph, "Block from: ", true);
+            string to   = chooseLocation(graph, "Block to: ", false);
+            if (graph.blockPath(from, to)) cout << "\n  Path BLOCKED: " << from << " <-> " << to << "\n"; else cout << "\n  Error: No path exists between " << from << " and " << to << ".\n";
             break;
         }
 
-        // ── 8. Unblock a path ───────────────────────────────
+        // Ã¢â€â‚¬Ã¢â€â‚¬ 8. Unblock a path Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
         case 8: {
-            string from = chooseLocation(graph, "Unblock from: ");
-            string to   = chooseLocation(graph, "Unblock to: ");
-            graph.unblockPath(from, to);
-            cout << "\n  Path UNBLOCKED: " << from << " <-> " << to << "\n";
+            string from = chooseLocation(graph, "Unblock from: ", true);
+            string to   = chooseLocation(graph, "Unblock to: ", false);
+            if (graph.unblockPath(from, to)) cout << "\n  Path UNBLOCKED: " << from << " <-> " << to << "\n"; else cout << "\n  Error: No path exists between " << from << " and " << to << ".\n";
             break;
         }
 
-        // ── 9. Toggle wheelchair mode ───────────────────────
+        // Ã¢â€â‚¬Ã¢â€â‚¬ 9. Toggle wheelchair mode Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
         case 9:
             wheelchairMode = !wheelchairMode;
             cout << "\n  Wheelchair mode: "
